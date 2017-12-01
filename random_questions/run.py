@@ -1,6 +1,9 @@
 # coding=utf8
-import re
-from random import shuffle
+import sys, os
+
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(BASE_DIR)
+
 from tiku_orm.tiku_model import *
 from utils import *
 from logger import get_logger
