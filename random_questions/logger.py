@@ -26,7 +26,7 @@ def get_logger(log_name):
     f_handler.setFormatter(complicated_formatter)
 
     c_handler = logging.StreamHandler()
-    c_handler.setLevel(logging.INFO)
+    c_handler.setLevel(logging.DEBUG)
     c_handler.setFormatter(simple_formatter)
 
     logger = logging.getLogger(log_name)

@@ -36,20 +36,23 @@ class SectionBase(BaseModel):
         self.q_type = IntegerField(column_name='QuestionType')  # 章节type25
         super(SectionBase, self).__init__(**kwargs)
 
-        # 计算综合排序
         self.parent_section = kwargs.get('parent_section', None)
-        self.section_order = self._cal_section_order()
 
         # 字章节
         self.child_sections = []
 
+    def insert_new_row(self):
+        # 计算综合排序
+        self.section_order = self._cal_section_order()
+        super(SectionBase, self).insert_new_row()
+
     def __repr__(self):
-        return '<id:{},name:{},summary:{},order:{}>'.format(self.id, self.name, self.summary, self.order_num)
+        return '<id:{},name:{},summary:{}'.format(self.id, self.name, self.summary)
 
     def _cal_section_order(self):
         """计算SectionOrder"""
         if self.level == 0 or self.order_num == 0:
-            raise MyLocalException('先确定level和order_num,再计算section_order')
+            raise Exception('先确定level和order_num,再计算section_order')
         section_order = self.order_num * (1000 ** (3 - self.level))
         if self.parent_section:
             section_order += self.parent_section.section_order
@@ -260,6 +263,13 @@ class CategoryItem(BaseModel):
     def __repr__(self):
         return '<id:{},name:{},group:{}>'.format(self.id, self.name, self.group)
 
+    def __eq__(self, other):
+        if isinstance(other, Question):
+            return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
+
     @classmethod
     def get_categoryitem_by_coursesection(cls, section_id):
         """根据CourseSection找到关联的CategoryItem"""
@@ -297,7 +307,7 @@ class Question(BaseModel):
         return hash(self.id)
 
     def __repr__(self):
-        return '<id:{},body:{},q_type:{}>'.format(self.id, self.body, self.q_type)
+        return '<id:{},group:{}>'.format(self.id, self.item_group)
 
     @classmethod
     def get_questions_by_item(cls, item_id):
