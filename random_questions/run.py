@@ -65,13 +65,15 @@ def assist_generator():
 class SectionTreeWorker(object):
     """章节树工作类"""
 
-    def __init__(self, section_tree, assist):
+    def __init__(self, section_tree, assist, book):
         """
         :param section_tree:    章节树
         :param assist:          章节树所属教辅
         """
+
         self.section_tree = section_tree
-        self.assist = assist
+        self.assist = assist  # 教辅
+        self.book = book  # 教材
         self.new_assist = None  # 新教辅
         self.new_tree = None  # 新章节树，册开头
         self.recurse_section_tree(section_tree)
@@ -133,7 +135,7 @@ class SectionTreeWorker(object):
             summary='英语同步练',
             book_id=self.assist.book_id,
             q_type=122,  # 英语同步练122
-            grade=self.assist.grade,
+            grade=self.book.grade,
             subject=2  # 英语
         )
         self.new_assist.insert_new_row()
@@ -259,7 +261,7 @@ def run():
         st_list = SectionTree.get_section_by_assist(assist_id=assist.id, level=1)
         for st in st_list:
             # 处理章节树
-            SectionTreeWorker(st, assist)
+            SectionTreeWorker(st, assist, book)
 
 
 if __name__ == '__main__':
