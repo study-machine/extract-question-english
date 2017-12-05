@@ -33,7 +33,13 @@ def sort_by_item_group(question_list):
         '义': 2,
         '形': 3,
     }
-    return sorted(question_list, key=lambda q: sort_value.get(q.item_group, 4))
+    try:
+        res = sorted(question_list, key=lambda q: sort_value.get(q.item_group, 4))
+    except Exception, e:
+        log.critical(e)
+        log.critical(question_list)
+        raise
+    return
 
 
 def cut_six_times(question_list):
