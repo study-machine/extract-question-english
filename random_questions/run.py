@@ -3,7 +3,8 @@ import sys, os
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(BASE_DIR)
-
+reload(sys)
+sys.setdefaultencoding('utf-8')
 from datetime import datetime
 import re
 from tiku_orm.tiku_model import *
