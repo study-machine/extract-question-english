@@ -241,7 +241,9 @@ class MissionGroupMaker(object):
             log.error('题目没了，{}题太少不够抽的'.format(self.unit))
             return
         q = pop_random_question(questions)
-        if not q or q.id in {q.id for q in self.confirm_questions}:
+        if not q:
+            return False
+        if q or q.id in {q.id for q in self.confirm_questions}:
             q = pop_random_question(questions)
         log.debug('获取到题目:{}'.format(q))
         self.confirm_questions.append(q)
