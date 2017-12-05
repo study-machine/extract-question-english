@@ -39,7 +39,7 @@ def sort_by_item_group(question_list):
         log.critical(e)
         log.critical(question_list)
         raise
-    return
+    return res
 
 
 def cut_six_times(question_list):
@@ -252,6 +252,8 @@ class MissionGroupMaker(object):
             return False
         if q or q.id in {q.id for q in self.confirm_questions}:
             q = pop_random_question(questions)
+            if not q:
+                return False
         log.debug('获取到题目:{}'.format(q))
         self.confirm_questions.append(q)
         return True
@@ -259,6 +261,9 @@ class MissionGroupMaker(object):
     @staticmethod
     def pop_random_question(questions):
         """选随机题目"""
+        if not questions:
+            log.warning('没有题可取了')
+            return None
         if questions:
             return questions.pop(randint(0, len(questions) - 1))
 
