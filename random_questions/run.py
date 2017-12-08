@@ -34,12 +34,14 @@ def handle_unit_name(section):
         try:
             unit_num_int = int(unit_num_str)
         except Exception:
-            log.debug('{} 是英语数字'.format(section.name))
+            log.info('{} 是英语数字'.format(section.name))
             try:
-                unit_num_int = english_num(unit_num_str.lower())
+                unit_num_int = english_num[unit_num_str.lower()]
             except:
                 raise Exception('替换短名称有误')
-        section.name = 'Unit {}'.format(unit_num_int)
+        changed_name = 'Unit {}'.format(unit_num_int)
+        log.info('{} 改为 {}'.format(section.name, changed_name))
+        section.name = changed_name
     except Exception:
         pass
 
@@ -140,7 +142,7 @@ class SectionTreeWorker(object):
 
     def recurse_section_tree(self, section):
         """递归处理一棵章节树"""
-        log.info('获取到章节:{}'.format(section))
+        log.debug('获取到章节:{}'.format(section))
         if section.level > 3:  # 4级章节 练习
             if section.name == '词汇':
                 items = CategoryItem.get_categoryitem_by_coursesection(section.id)
