@@ -5,19 +5,47 @@ BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(BASE_DIR)
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
 from datetime import datetime
 import re
 from tiku_orm.tiku_model import *
 from utils import *
 from logger import get_logger
+from change_name import special_unit_name, english_num
 
 log = get_logger('run')
 
 # 需排除的复习单元
-EXCLUDE_UNIT_NAME = ['Revision', 'Recycle', 'Review']
+EXCLUDE_UNIT_NAME = ['Revision', 'Recycle', 'Review', 'REVISION']
+
+
+def handle_unit_name(section):
+    """处理单元名"""
+    # 特殊单元名称替换
+    if section.id in special_unit_name:
+        section.name = special_unit_name[section.id]
+        return
+
+    # 替换短名称
+    pattern = '(Unit|UNIT|Module)\s(\d{1,2}|\w+).*'
+    m = re.match(pattern, section.name)
+    try:
+        unit_num_str = m.group(2)
+        try:
+            unit_num_int = int(unit_num_str)
+        except Exception:
+            log.debug('{} 是英语数字'.format(section.name))
+            try:
+                unit_num_int = english_num(unit_num_str.lower())
+            except:
+                raise Exception('替换短名称有误')
+        section.name = 'Unit {}'.format(unit_num_int)
+    except Exception:
+        pass
 
 
 def filter_unit(unit_name):
+    """排除单元"""
     for word in EXCLUDE_UNIT_NAME:
         pattern = '.*{}.*'.format(word)
         m = re.match(pattern, unit_name)
@@ -84,9 +112,9 @@ class SectionTreeWorker(object):
         self.new_assist = None  # 新教辅
         self.new_tree = None  # 新章节树，册开头
         self.recurse_section_tree(section_tree)
-        self.write_ce_and_missions()
+        self.write_unit_and_missions()
 
-    def write_ce_and_missions(self):
+    def write_unit_and_missions(self):
         index = 1
         for unit in self.new_tree.child_sections:
             # 复习单元跳过
@@ -126,6 +154,9 @@ class SectionTreeWorker(object):
             self.create_new_assist(section)
             self.create_new_section(section)
         elif section.level == 2:  # 单元
+            # 处理单元名称
+            handle_unit_name(section)
+
             self.create_new_section(section)
             # 新建单元下面的单词
             section.map_section.ce_words = []
@@ -157,7 +188,7 @@ class SectionTreeWorker(object):
 
         new_section = SectionBase(
             name=section.name,
-            summary='英语同步练',
+            summary='' if section.level == 3 else '英语同步练',  # 关卡summary为空
             level=section.level,
             parent_id=parent_id,
             order_num=1,

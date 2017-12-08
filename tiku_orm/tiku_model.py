@@ -3,7 +3,6 @@ from tiku_orm.base_field import *
 from tiku_orm.base_model import *
 from random_questions.utils import *
 
-
 class SectionBase(BaseModel):
     def __init__(self, **kwargs):
         self.__tablename__ = 'wx_edu_coursesection'
