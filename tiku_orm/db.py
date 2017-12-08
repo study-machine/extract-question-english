@@ -24,6 +24,15 @@ class DatabaseConfig(object):
         'use_unicode': False,
     }
 
+    QA_db = {
+        'host': '10.9.35.226',
+        'user': 'test',
+        'port': 3329,
+        'password': 'qaOnly!@#',
+        'db': 'tiku',
+        'charset': 'utf8mb4',
+        'use_unicode': False,
+    }
 
     # 线上从库
     online_slave_db = {
