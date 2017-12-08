@@ -320,7 +320,7 @@ class Question(BaseModel):
         INNER JOIN edu_relate_questioncategory AS r1 ON q.QuestionID = r1.QuestionID
         INNER JOIN edu_relate_questioncategory AS r2 ON q.QuestionID = r2.QuestionID
         INNER JOIN edu_categoryitem AS c ON r2.CategoryItemID = c.CategoryItemID
-        AND c.CategoryID = 4 WHERE r1.CategoryItemID = {}
+        WHERE q.Status=0 AND c.CategoryID = 4 AND r1.CategoryItemID = {};
         """.format(item_id)
         res = cls.select(sql)
         return [
