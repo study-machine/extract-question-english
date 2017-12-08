@@ -235,7 +235,7 @@ class MissionGroupMaker(object):
         for i in xrange(n / 6):
             mission = Mission(
                 name='第{}关'.format(i + 1),
-                summary='英语同步练',
+                summary='',
                 level=3,
                 order_num=i + 1,
                 book_id=self.unit.book_id,
