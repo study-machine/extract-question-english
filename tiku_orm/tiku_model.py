@@ -32,7 +32,7 @@ class SectionBase(BaseModel):
         self.grade = IntegerField(column_name='Grade')
         self.subject = IntegerField(column_name='Subject')  # 学科
         self.last = IntegerField(column_name='Last')
-        self.q_type = IntegerField(column_name='QuestionType')  # 章节type25
+        self.q_type = IntegerField(column_name='QuestionType')  # 章节type21
         super(SectionBase, self).__init__(**kwargs)
 
         self.parent_section = kwargs.get('parent_section', None)
