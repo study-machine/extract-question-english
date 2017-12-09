@@ -1,5 +1,6 @@
 # coding=utf8
 import sys, os
+from tiku_orm.config import write_type
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(BASE_DIR)
@@ -100,6 +101,16 @@ def assist_generator():
             yield book, assist
 
 
+NewSectionClass = SectionBase
+NewAssistClass = Assist
+NewMissionClass = Mission
+
+if write_type == 'store':
+    NewSectionClass = SectionBaseStore
+    NewAssistClass = AssistStore
+    NewMissionClass = MissionStore
+
+
 class SectionTreeWorker(object):
     """章节树工作类"""
 
@@ -171,7 +182,7 @@ class SectionTreeWorker(object):
 
     def create_new_assist(self, section_ce):
         """基于<册>创建新教辅"""
-        self.new_assist = AssistStore(
+        self.new_assist = NewAssistClass(
             name=section_ce.summary + '-英语同步练',
             summary='英语同步练',
             book_id=self.assist.book_id,
@@ -189,7 +200,7 @@ class SectionTreeWorker(object):
             parent_id = section.parent_section.map_section.id
             parent_section = section.parent_section.map_section
 
-        new_section = SectionBaseStore(
+        new_section = NewSectionClass(
             name=section.name,
             summary='' if section.level == 3 else '英语同步练',  # 关卡summary为空
             level=section.level,
@@ -234,7 +245,7 @@ class MissionGroupMaker(object):
         if n < 6:
             return
         for i in xrange(n / 6):
-            mission = MissionStore(
+            mission = NewMissionClass(
                 name='第{}关'.format(i + 1),
                 summary='',
                 level=3,
@@ -244,7 +255,7 @@ class MissionGroupMaker(object):
                 grade=self.unit.grade,
                 subject=2,  # 英语
                 last=1,
-                q_type=21,  # 同步练
+                q_type=24,  # 同步练
                 parent_section=self.unit
             )
             mission.questions = self.confirm_questions[i * 6:i * 6 + 6]

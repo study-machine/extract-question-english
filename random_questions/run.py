@@ -199,7 +199,7 @@ class SectionTreeWorker(object):
             grade=self.assist.grade,
             subject=2,  # 英语
             last=0,
-            q_type=21,  # 同步练 章节type 21
+            q_type=24,  # 同步练 章节type 21
             parent_section=parent_section
         )
         if section.level == 1:
@@ -243,7 +243,7 @@ class MissionGroupMaker(object):
                 grade=self.unit.grade,
                 subject=2,  # 英语
                 last=1,
-                q_type=21,  # 同步练
+                q_type=24,  # 同步练
                 parent_section=self.unit
             )
             mission.questions = self.confirm_questions[i * 6:i * 6 + 6]
