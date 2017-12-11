@@ -18,7 +18,7 @@ from tiku_orm.config import write_type
 log = get_logger('run')
 
 # 需排除的复习单元
-EXCLUDE_UNIT_NAME = ['Revision', 'Recycle', 'Review', 'REVISION']
+EXCLUDE_UNIT_NAME = ['Revision', 'Recycle', 'Review', 'REVISION', 'Starter']
 
 
 def handle_unit_name(section):

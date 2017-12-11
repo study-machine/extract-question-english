@@ -58,7 +58,7 @@ class DatabaseConfig(object):
     dev_knowboxstore_db = {
         'host': '10.10.48.120',
         'user': 'lyj',
-        'port': 3339,
+        'port': 3308,
         'password': 'lyj123',
         'db': 'knowboxstore_wxy',
         'charset': 'utf8mb4',
