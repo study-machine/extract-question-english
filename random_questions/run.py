@@ -15,6 +15,7 @@ from logger import get_logger
 from change_name import special_unit_name, english_num
 from tiku_orm.config import write_type
 from itertools import groupby
+from random import shuffle
 
 log = get_logger('run')
 
@@ -86,6 +87,7 @@ def cut_six_times(question_list):
         log.info('题目数量超过48道题，只留8关')
         question_list = sort_by_item_group(question_list)
         question_list = question_list[:48]
+        shuffle(question_list)
     # 切掉不足6的倍数
     n = len(question_list) % 6
     if n != 0:
