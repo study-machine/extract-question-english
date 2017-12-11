@@ -14,6 +14,7 @@ from utils import *
 from logger import get_logger
 from change_name import special_unit_name, english_num
 from tiku_orm.config import write_type
+from itertools import groupby
 
 log = get_logger('run')
 
@@ -99,6 +100,12 @@ def assist_generator():
         assist_list = Assist.get_assist_by_book(book.id)
         for assist in assist_list:
             yield book, assist
+
+
+def group_question(question_list):
+    key_fn = lambda q: q.item_group
+    grouped_iter = groupby(sorted(question_list, key=key_fn), key=key_fn)
+    return [(key, list(l)) for key, l in grouped_iter]
 
 
 NewSectionClass = SectionBase
@@ -273,17 +280,18 @@ class MissionGroupMaker(object):
             for k in need:
                 need[k] -= 1
 
-            question_list = list(set(question_list))
-        for question in question_list:
-            if question.item_group == '音':
+        question_list = list(set(question_list))
+        question_groups = group_question(question_list)
+        for key, question_list in question_groups:
+            if key == '音':
                 if need['音'] < 1:
                     self.extract_confirm_questions(question_list)
                     need['音'] += 1
-            if question.item_group == '形':
+            if key == '形':
                 if need['形'] < 1:
                     self.extract_confirm_questions(question_list)
                     need['形'] += 1
-            if question.item_group == '义':
+            if key == '义':
                 if need['义'] < 1:
                     self.extract_confirm_questions(question_list)
                     need['义'] += 1
