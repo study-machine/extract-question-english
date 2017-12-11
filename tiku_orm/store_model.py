@@ -21,6 +21,8 @@ class SectionBaseStore(BaseModel):
         'assist_id': 'assist_id',
         'last': 'last',
         'q_type': 'question_type',
+        'online_status': 'online_status',
+        'status': 'status',
     }
 
     def __init__(self, **kwargs):
