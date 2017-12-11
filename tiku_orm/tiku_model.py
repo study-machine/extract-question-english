@@ -312,14 +312,15 @@ class Question(BaseModel):
     def get_questions_by_item(cls, item_id):
         """
         根据CourseSection找到关联的CategoryItem
-        本次要求填空题,Question表的QuestionType=1
+        本次要求 0 填空 1选择   2选词填空  3连词成句
         """
         sql = """
         SELECT q.QuestionID,q.Question,q.QuestionType,c.Group FROM wx_edu_questions_new AS q
         INNER JOIN edu_relate_questioncategory AS r1 ON q.QuestionID = r1.QuestionID
         INNER JOIN edu_relate_questioncategory AS r2 ON q.QuestionID = r2.QuestionID
         INNER JOIN edu_categoryitem AS c ON r2.CategoryItemID = c.CategoryItemID
-        WHERE q.Status=0 AND c.CategoryID = 4 AND r1.CategoryItemID = {};
+        WHERE q.Status=0 AND c.CategoryID = 4 AND r1.CategoryItemID = {}
+        AND q.QuestionType in (0,1,2,3);
         """.format(item_id)
         res = cls.select(sql)
         return [

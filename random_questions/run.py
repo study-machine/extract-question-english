@@ -9,9 +9,11 @@ sys.setdefaultencoding('utf-8')
 from datetime import datetime
 import re
 from tiku_orm.tiku_model import *
+from tiku_orm.store_model import *
 from utils import *
 from logger import get_logger
 from change_name import special_unit_name, english_num
+from tiku_orm.config import write_type
 
 log = get_logger('run')
 
@@ -99,6 +101,16 @@ def assist_generator():
             yield book, assist
 
 
+NewSectionClass = SectionBase
+NewAssistClass = Assist
+NewMissionClass = Mission
+
+if write_type == 'store':
+    NewSectionClass = SectionBaseStore
+    NewAssistClass = AssistStore
+    NewMissionClass = MissionStore
+
+
 class SectionTreeWorker(object):
     """章节树工作类"""
 
@@ -170,7 +182,7 @@ class SectionTreeWorker(object):
 
     def create_new_assist(self, section_ce):
         """基于<册>创建新教辅"""
-        self.new_assist = Assist(
+        self.new_assist = NewAssistClass(
             name=section_ce.summary + '-英语同步练',
             summary='英语同步练',
             book_id=self.assist.book_id,
@@ -188,7 +200,7 @@ class SectionTreeWorker(object):
             parent_id = section.parent_section.map_section.id
             parent_section = section.parent_section.map_section
 
-        new_section = SectionBase(
+        new_section = NewSectionClass(
             name=section.name,
             summary='' if section.level == 3 else '英语同步练',  # 关卡summary为空
             level=section.level,
@@ -233,7 +245,7 @@ class MissionGroupMaker(object):
         if n < 6:
             return
         for i in xrange(n / 6):
-            mission = Mission(
+            mission = NewMissionClass(
                 name='第{}关'.format(i + 1),
                 summary='',
                 level=3,
