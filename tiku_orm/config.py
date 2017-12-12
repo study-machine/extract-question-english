@@ -3,7 +3,7 @@
 from db import *
 
 db_config_read = DatabaseConfig.online_slave_db
-db_config_write = DatabaseConfig.dev_knowboxstore_db
+db_config_write = DatabaseConfig.qa_tiku_db
 
-# write_type = 'tiku'
-write_type = 'store'
+write_type = 'tiku'
+# write_type = 'store'
