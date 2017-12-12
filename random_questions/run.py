@@ -148,7 +148,7 @@ class SectionTreeWorker(object):
             mg = MissionGroupMaker(items, unit)
             if not mg.missions:
                 log.error('单元的题目不足6到无法建立关卡'.format(unit))
-                break
+                continue
             unit.order_num = index
             unit.insert_new_row()
             log.info('Insert new 单元:{}'.format(unit))

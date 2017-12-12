@@ -150,14 +150,23 @@ class SectionTreeWorker(object):
                 log.error('单元的题目不足6到无法建立关卡'.format(unit))
                 break
             unit.order_num = index
-            unit.insert_new_row()
+            #
+            #   insert 单元
+            #
+            # unit.insert_new_row()
             log.info('Insert new 单元:{}'.format(unit))
             index += 1
             for m in mg.missions:
                 m.parent_id = unit.id
-                m.insert_new_row()
+                #
+                #   insert 新关卡
+                #
+                # m.insert_new_row()
                 log.info('Insert new 关卡:{}'.format(m))
-                m.write_relate_self_questions()
+                #
+                #   insert 关系
+                #
+                # m.write_relate_self_questions()
                 for q in m.questions:
                     log.debug('关卡题目包括:{}'.format(q))
 
@@ -173,9 +182,10 @@ class SectionTreeWorker(object):
                 section.parent_section.parent_section.map_section.ce_sentences += items
             return
         if section.level == 1:  # 册
+            pass
             # 创建新教辅
             self.create_new_assist(section)
-            self.create_new_section(section)
+            # self.create_new_section(section)
         elif section.level == 2:  # 单元
             # 处理单元名称
             handle_unit_name(section)
@@ -191,23 +201,29 @@ class SectionTreeWorker(object):
 
     def create_new_assist(self, section_ce):
         """基于<册>创建新教辅"""
-        self.new_assist = NewAssistClass(
-            name=section_ce.summary + '-英语同步练',
-            summary='英语同步练',
-            book_id=self.assist.book_id,
-            q_type=122,  # 英语同步练122
-            grade=self.book.grade,
-            subject=2  # 英语
-        )
-        self.new_assist.insert_new_row()
+        # self.new_assist = NewAssistClass(
+        #     name=section_ce.summary + '-英语同步练',
+        #     summary='英语同步练',
+        #     book_id=self.assist.book_id,
+        #     q_type=122,  # 英语同步练122
+        #     grade=self.book.grade,
+        #     subject=2  # 英语
+        # )
+        self.new_assist = Assist.get_assist_by_id(108889)
+        #
+        #   insert 教辅
+        #
+        # self.new_assist.insert_new_row()
         log.info('Insert new 教辅:{}'.format(self.new_assist))
 
     def create_new_section(self, section):
         parent_id = 0
         parent_section = None
         if section.level == 2:  # 单元
-            parent_id = section.parent_section.map_section.id
-            parent_section = section.parent_section.map_section
+            # parent_id = section.parent_section.map_section.id
+            parent_id = 425377
+            # parent_section = section.parent_section.map_section
+            parent_section = SectionBase.get_section_by_id(425377)
 
         new_section = NewSectionClass(
             name=section.name,
@@ -215,7 +231,7 @@ class SectionTreeWorker(object):
             level=section.level,
             parent_id=parent_id,
             order_num=1,
-            book_id=self.new_assist.book_id,
+            book_id=self.book.id,
             assist_id=self.new_assist.id,
             grade=self.assist.grade,
             subject=2,  # 英语
@@ -224,7 +240,7 @@ class SectionTreeWorker(object):
             parent_section=parent_section
         )
         if section.level == 1:
-            new_section.insert_new_row()
+            # new_section.insert_new_row()
             log.info('Insert new 册:{}'.format(self.new_tree))
         if new_section.level < 3:
             # map_section为基础章节的映射章节，及同步练章节
@@ -326,12 +342,17 @@ class MissionGroupMaker(object):
 def run():
     for book, assist in assist_generator():
         log.info('获得教材下:<{}>的教辅:<{}>'.format(book, assist))
-
+        if assist.id != 108091:
+            log.debug('not 新起点一年级 continue')
+            continue
         st_list = SectionTree.get_section_by_assist(assist_id=assist.id, level=1)
         for st in st_list:
             # 处理章节树
             SectionTreeWorker(st, assist, book)
 
+
+# 基础 新起点一年级 assist_id 108091 上册 section_id 343519
+# 同步练 新起点一年级 assist_id 108889 上册 section_id  425377
 
 if __name__ == '__main__':
     log.info('开始')

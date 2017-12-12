@@ -3,6 +3,7 @@ from tiku_orm.base_field import *
 from tiku_orm.base_model import *
 from random_questions.utils import *
 
+
 class SectionBase(BaseModel):
     def __init__(self, **kwargs):
         self.__tablename__ = 'wx_edu_coursesection'
@@ -81,6 +82,30 @@ class SectionBase(BaseModel):
                 q_type=d['QuestionType']
             ) for d in res
         ]
+
+    @classmethod
+    def get_section_by_id(cls, section_id):
+        sql = """
+        SELECT * FROM wx_edu_coursesection
+        WHERE CourseSectionID={};
+        """.format(section_id)
+        res = cls.select(sql)
+        d = res[0]
+        return cls(
+            id=d['CourseSectionID'],
+            name=d['SectionName'],
+            summary=d['Summary'],
+            level=d['sLevel'],
+            parent_id=d['ParentID'],
+            order_num=d['OrderNum'],
+            book_id=d['JiaoCaiID'],
+            section_order=d['SectionOrder'],
+            assist_id=d['TeachingAssistID'],
+            grade=d['Grade'],
+            subject=d['Subject'],
+            last=d['Last'],
+            q_type=d['QuestionType']
+        )
 
     def insert_relate_section_question(self, question_id):
         if not self.id:
@@ -244,6 +269,24 @@ class Assist(BaseModel):
                 subject=d['Subject']
             ) for d in res
         ]
+
+    @classmethod
+    def get_assist_by_id(cls, assist_id):
+        """根据教材id获得教辅，测试库的基础教辅为summary=小学英语基础"""
+        sql = """
+        SELECT * FROM wx_edu_teachingassist WHERE TeachingAssistID={}
+        """.format(assist_id)
+        res = cls.select(sql)
+        d = res[0]
+        return cls(
+            id=d['TeachingAssistID'],
+            name=d['Name'],
+            summary=d['Summary'],
+            book_id=d['JiaocaiID'],
+            q_type=d['QuestionType'],
+            grade=d['Grade'],
+            subject=d['Subject']
+        )
 
 
 class CategoryItem(BaseModel):
