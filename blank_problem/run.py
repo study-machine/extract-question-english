@@ -9,6 +9,7 @@ from wxy_util.database_work import DatabaseRW, DatabaseConfig
 
 class Store(DatabaseRW):
     db_config = DatabaseConfig.KnowBoxStore
+    read_only = True
 
     def ques_en_20(self):
         sql = """
@@ -19,10 +20,14 @@ class Store(DatabaseRW):
         return self.select_fetchall(sql)
 
 
-if __name__ == '__main__':
+def check_blank(env):
     store = Store('local')
     for row in store.ques_en_20():
         jd = json.loads(row['right_answer'])
         content = jd[0]['content']
         if ' ' in content:
             print row
+
+
+if __name__ == '__main__':
+    check_blank('online')
